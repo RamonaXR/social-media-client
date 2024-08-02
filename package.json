@@ -5,6 +5,8 @@
   "type": "module",
   "main": "index.js",
   "scripts": {
+    "test": "node src/js/joker.js",
+    "format": "prettier -w src/js/joker.js",
     "build": "sass src/scss:dist/css",
     "start": "sass --watch src/scss:dist/css & live-server"
   },
@@ -13,6 +15,7 @@
   "license": "ISC",
   "devDependencies": {
     "live-server": "^1.2.2",
+    "prettier": "^3.3.3",
     "sass": "^1.54.8"
   },
   "dependencies": {
