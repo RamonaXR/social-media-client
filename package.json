@@ -7,8 +7,10 @@
   "scripts": {
     "test": "npm run test-unit",
     "test-unit": "jest",
-    "test2": "npm run test-e2e",
+    "test2": "npm run test-e2e-cli",
     "test-e2e": "cypress open",
+    "test-e2e-report": "cypress run --reporter mochawesome",
+    "test-e2e-cli": "cypress run",
     "lint": "eslint src/**/*.js",
     "lint-fix": "eslint src/**/*.js --cache --fix",
     "format": "prettier -w src/**/*.js",
