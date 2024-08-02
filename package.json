@@ -6,6 +6,8 @@
   "main": "index.js",
   "scripts": {
     "test": "node src/js/index.test.js",
+    "lint": "eslint src/**/*.js",
+    "lint-fix": "eslint src/**/*.js --cache --fix",
     "format": "prettier -w src/**/*.js",
     "build": "sass src/scss:dist/css",
     "start": "sass --watch src/scss:dist/css & live-server"
