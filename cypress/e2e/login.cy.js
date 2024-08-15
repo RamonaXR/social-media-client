@@ -1,7 +1,8 @@
 describe('Valid Login Tests', () => {
   beforeEach(() => {
     cy.fixture('credentials.json').as('credentials');
-    cy.visit('http://127.0.0.1:8080/login');
+    cy.visit('http://127.0.0.1:8080');
+    cy.wait(2000);
   });
 
   it('logs in with valid credentials and stores token and profile in localStorage', function () {
@@ -9,12 +10,12 @@ describe('Valid Login Tests', () => {
 
     cy.get('[data-cy="emailInput"]').click();
     cy.get('@credentials').then((user) => {
-      cy.get('[data-cy="emailInput"]').type(user.validEmail);
-      cy.get('[data-cy="passwordInput"]').click();
-      cy.get('[data-cy="passwordInput"]').type(user.validPassword);
+      cy.get('[data-cy="loginEmail"]').type(user.validEmail);
+      cy.get('[data-cy="loginPassword"]').click();
+      cy.get('[data-cy="loginPassword"]').type(user.validPassword);
     });
 
-    cy.get('[data-cy="login-btn"]').click();
+    cy.get('[data-cy=".btn.btn-success"]').click();
 
     cy.wait('@loginRequest').then((interception) => {
       expect(interception.response.statusCode).to.eq(200);
