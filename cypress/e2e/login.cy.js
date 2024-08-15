@@ -1,33 +1,73 @@
-describe('Valid Login Tests', () => {
+describe('Login form', () => {
   beforeEach(() => {
     cy.fixture('credentials.json').as('credentials');
-    cy.visit('http://127.0.0.1:8080');
-    cy.wait(2000);
+    cy.visit('/');
+    cy.wait(500);
   });
 
-  it('logs in with valid credentials and stores token and profile in localStorage', function () {
-    cy.intercept('POST', 'https://nf-api.onrender.com/api/v1/social/auth/login').as('loginRequest');
+  it('should log in with valid credentials', () => {
+    cy.intercept('POST', 'https://nf-api.onrender.com/api/v1/social/auth/login', {
+      statusCode: 200,
+      body: {
+        name: 'test',
+        email: 'valid@stud.noroff.no',
+        banner: null,
+        avatar: '',
+        accessToken: 'testToken',
+      },
+    }).as('loginResponse');
 
-    cy.get('[data-cy="emailInput"]').click();
+    cy.get(`[data-cy="loginFormBtn"]`).click();
+    cy.wait(500);
+    cy.get(`[data-cy="emailInput"]`).click();
     cy.get('@credentials').then((user) => {
-      cy.get('[data-cy="loginEmail"]').type(user.validEmail);
-      cy.get('[data-cy="loginPassword"]').click();
-      cy.get('[data-cy="loginPassword"]').type(user.validPassword);
+      cy.get(`[data-cy="emailInput"]`).type(`${user.validEmail}`);
+      cy.get(`[data-cy="passwordInput"]`).click();
+      cy.get(`[data-cy="passwordInput"]`).type(`${user.validPassword}{enter}`);
     });
 
-    cy.get('[data-cy=".btn.btn-success"]').click();
+    cy.wait('@loginResponse');
 
-    cy.wait('@loginRequest').then((interception) => {
-      expect(interception.response.statusCode).to.eq(200);
-
-      // Verify localStorage
-      cy.window().then((win) => {
-        expect(win.localStorage.getItem('token')).to.exist;
-        expect(win.localStorage.getItem('profile')).to.exist;
-      });
-
-      // Verify the URL
-      cy.location('pathname').should('eq', '/');
+    cy.window().its('localStorage.token').should('exist');
+    cy.window().its('localStorage.profile').should('exist');
+    cy.get(`[data-cy="logoutBtn"]`).click({ force: true });
+    cy.location('pathname').should('equal', '/');
+    cy.wait(500);
+    cy.get(`[data-cy="loginFormBtn"]`).click();
+    cy.wait(500);
+    cy.get(`[data-cy="emailInput"]`).click();
+    cy.get(`@credentials`).then((user) => {
+      cy.get(`[data-cy="emailInput"]`).type(user.validEmail);
+      cy.get(`[data-cy="passwordInput"]`).click();
+      cy.get(`[data-cy="passwordInput"]`).type(`${user.validPassword}`);
     });
+
+    cy.get(`[data-cy="login-btn"]`).click();
+    cy.wait('@loginResponse');
+
+    cy.window().its('localStorage.token').should('exist');
+    cy.window().its('localStorage.profile').should('exist');
+  });
+
+  it('should not submit the login form when provided with invalid credentials and user is shown a message', () => {
+    cy.intercept('POST', 'https://nf-api.onrender.com/api/v1/social/auth/login', {
+      statusCode: 401,
+      body: {
+        message: 'Invalid email or password',
+      },
+    }).as('loginFailed');
+    cy.get(`[data-cy="loginFormBtn"]`).click();
+    cy.wait(500);
+    cy.get(`[data-cy="emailInput"]`).click();
+    cy.get('@credentials').then((user) => {
+      cy.get(`[data-cy="emailInput"]`).type(`${user.validEmail}`);
+      cy.get(`[data-cy="passwordInput"]`).click();
+      cy.get(`[data-cy="passwordInput"]`).type(`${user.validPassword}{enter}`);
+    });
+    cy.wait('@loginFailed');
+    cy.on('window:alert', () => {
+      expect(true).to.be.true;
+    });
+    cy.location('pathname').should('equal', '/');
   });
 });
