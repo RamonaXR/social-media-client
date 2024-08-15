@@ -1,7 +1,7 @@
 describe('Valid Login Tests', () => {
   beforeEach(() => {
     cy.fixture('credentials.json').as('credentials');
-    cy.visit('/login');
+    cy.visit('http://127.0.0.1:8080/login');
   });
 
   it('logs in with valid credentials and stores token and profile in localStorage', function () {
