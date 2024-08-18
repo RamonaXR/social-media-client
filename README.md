@@ -7,7 +7,9 @@ Pre-commit hooks and save-hooks has been added.
 ## Status 
 
 [![Deploy static content to Pages](https://github.com/RamonaXR/social-media-client/actions/workflows/pages.yml/badge.svg?branch=master)](https://github.com/RamonaXR/social-media-client/actions/workflows/pages.yml)
- 
+
+- I could not run this deploy action from the workflow branch. 
+- To see status badge, please start the action called "deploy static content to pages". 
 
 [![Automated E2E Testing](https://github.com/RamonaXR/social-media-client/actions/workflows/e2e-test.yml/badge.svg)](https://github.com/RamonaXR/social-media-client/actions/workflows/e2e-test.yml)
 
